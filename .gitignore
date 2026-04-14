@@ -6,9 +6,6 @@ dist/
 
 # Environment files
 .env
-.env.*
-!.env.example
-
 # Logs
 *.log
 npm-debug.log*
