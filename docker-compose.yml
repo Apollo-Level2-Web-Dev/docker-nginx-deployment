@@ -6,6 +6,16 @@ services:
     environment:
       - INSTANCE_NAME=App-1
 
+  app2:
+    build: ./app
+    environment:
+      - INSTANCE_NAME=App-2
+
+  app3:
+    build: ./app
+    environment:
+      - INSTANCE_NAME=App-3
+
   nginx:
     image: nginx:latest
     ports:
@@ -14,3 +24,5 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - app1
+      - app2
+      - app3
