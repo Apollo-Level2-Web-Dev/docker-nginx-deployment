@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute, UserRole } from "./lib/authUtils";
-import { jwtUtils } from "./lib/jwtUtils";
 import { isTokenExpiringSoon } from "./lib/tokenUtils";
 import { getNewTokensWithRefreshToken, getUserInfo } from "./services/auth.services";
 
@@ -20,26 +19,24 @@ async function refreshTokenMiddleware (refreshToken : string) : Promise<boolean>
 
 export async function proxy (request : NextRequest) {
    try {
-         const accessTokenSecret = process.env.JWT_ACCESS_SECRET || process.env.ACCESS_TOKEN_SECRET;
-
-         if(!accessTokenSecret){
-                console.error("Missing JWT_ACCESS_SECRET/ACCESS_TOKEN_SECRET in ph-client runtime environment");
-         }
-
        const { pathname } = request.nextUrl; // eg /dashboard, /admin/dashboard, /doctor/dashboard
     const pathWithQuery = `${pathname}${request.nextUrl.search}`;
        const accessToken = request.cookies.get("accessToken")?.value;
        const refreshToken = request.cookies.get("refreshToken")?.value;
 
-         const decodedAccessToken =  accessToken && accessTokenSecret && jwtUtils.verifyToken(accessToken, accessTokenSecret).data;
+      let isValidAccessToken = Boolean(accessToken);
+      let userRole: UserRole | null = null;
+      let userInfo = null;
 
-         const isValidAccessToken = Boolean(accessToken && accessTokenSecret && jwtUtils.verifyToken(accessToken, accessTokenSecret).success);
+      // Validate auth state against backend session instead of local JWT verification.
+      if (isValidAccessToken) {
+          userInfo = await getUserInfo();
+          isValidAccessToken = Boolean(userInfo);
 
-       let userRole: UserRole | null = null;
-
-       if(decodedAccessToken){
-            userRole = decodedAccessToken.role as UserRole;
-       }
+          if (userInfo?.role) {
+             userRole = userInfo.role as UserRole;
+          }
+      }
 
        const routerOwner = getRouteOwner(pathname);
 
@@ -139,10 +136,8 @@ export async function proxy (request : NextRequest) {
 
        //Rule - Enforcing user to stay in reset password or verify email page if their needPasswordChange or isEmailVerified flags are not satisfied respectively
 
-       if(accessToken){
-            const userInfo = await getUserInfo();
-
-            if(userInfo){
+      if(accessToken){
+          if(userInfo){
                 // need email verification scenario
                 if(userInfo.emailVerified === false){
                     if(pathname !== "/verify-email"){

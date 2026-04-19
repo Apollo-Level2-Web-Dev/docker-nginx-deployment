@@ -149,6 +149,12 @@ jobs:
 
             cd "$APP_DIR"
 
+            if [ -d .git ]; then
+              git fetch --all --prune
+              git checkout main
+              git reset --hard ${{ github.sha }}
+            fi
+
             printf '%s' "${{ secrets.SERVER_ENV_PRODUCTION }}" > server/.env.production
 
             export REGISTRY=docker.io
