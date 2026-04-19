@@ -162,5 +162,5 @@ jobs:
 
             docker compose --env-file .env.stack -f docker-compose.prod.yaml pull
             docker compose --env-file .env.stack -f docker-compose.prod.yaml up -d
-            docker compose --env-file .env.stack -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm prisma migrate deploy"
+            docker compose --env-file .env.stack -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm prisma migrate deploy --schema=prisma/schema"
             docker image prune -f
