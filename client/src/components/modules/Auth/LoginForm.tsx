@@ -43,18 +43,6 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     return ;
                 }
             } catch (error : any) {
-                if (typeof error?.message === "string" && error.message.includes("NEXT_REDIRECT")) {
-                    return;
-                }
-                if (
-                    error &&
-                    typeof error === "object" &&
-                    "digest" in error &&
-                    typeof error.digest === "string" &&
-                    error.digest.startsWith("NEXT_REDIRECT")
-                ) {
-                    return;
-                }
                 console.log(`Login failed: ${error.message}`);
                 setServerError(`Login failed: ${error.message}`);
             }

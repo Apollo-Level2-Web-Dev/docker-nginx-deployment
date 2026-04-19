@@ -55,11 +55,12 @@ app.use("/api/v1", IndexRoutes);
 
 // Basic route
 app.get('/', async (req: Request, res: Response) => {
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         message: 'API is working',
     })
 });
+
 
 app.use(globalErrorHandler)
 app.use(notFound)

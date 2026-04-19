@@ -46,9 +46,6 @@ export const loginAction = async (payload : ILoginPayload, redirectPath ?: strin
         
     } catch (error : any) {
         console.log(error, "error");
-        if (typeof error?.message === "string" && error.message.includes("NEXT_REDIRECT")) {
-            throw error;
-        }
         if(error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT")){
             throw error;
         }

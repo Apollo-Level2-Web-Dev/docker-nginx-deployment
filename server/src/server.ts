@@ -22,11 +22,11 @@ process.on("SIGTERM", () => {
     if(server){
         server.close(() => {
             console.log("Server closed gracefully.");
-            process.exit(1);
+            process.exit(0);
         });
     } 
     
-    process.exit(1);
+    process.exit(0);
     
 })
 
@@ -38,12 +38,12 @@ process.on("SIGINT", () => {
     if(server){
         server.close(() => {
             console.log("Server closed gracefully.");
-            process.exit(1);
+            process.exit(0);
         });
 
     }
 
-    process.exit(1);
+    process.exit(0);
 });
 
 //uncaught exception handler

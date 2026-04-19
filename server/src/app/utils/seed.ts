@@ -60,11 +60,25 @@ export const seedSuperAdmin = async () => {
 
         console.log("Super Admin Created ", superAdmin);
     } catch (error) {
+        const prismaErrorCode = (error as { code?: string })?.code;
+
+        // Ignore missing-table errors during first boot; migrations may not be applied yet.
+        if (prismaErrorCode === "P2021") {
+            console.warn("Skipping super admin seed because required tables are not available yet.");
+            return;
+        }
+
         console.error("Error seeding super admin: ", error);
-        await prisma.user.delete({
-            where : {
-                email : envVars.SUPER_ADMIN_EMAIL,
-            }
-        })
+
+        // Best-effort cleanup without crashing the server startup flow.
+        try {
+            await prisma.user.delete({
+                where : {
+                    email : envVars.SUPER_ADMIN_EMAIL,
+                }
+            });
+        } catch {
+            // no-op
+        }
     }
 }

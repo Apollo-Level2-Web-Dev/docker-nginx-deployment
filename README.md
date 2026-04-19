@@ -30,7 +30,7 @@ No Dockerfile needed here (official image is used).
 Run PostgreSQL container:
 
 ```bash
-docker run -d --name ph-db --network ph-net -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=ph_health -v ph-pg-data:/var/lib/postgresql/data postgres:16-alpine
+docker run -d --name ph-db --network ph-net -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=ph_health -v ph-pg-data:/var/lib/postgresql/data postgres:16-alpine
 ```
 
 ---
