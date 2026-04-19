@@ -20,6 +20,7 @@ coverage/
 
 # Secrets and sensitive input files
 ci/github-secrets.input.env
+README.LOCAL-CICD-DEPLOYMENT.md
 
 # Logs and runtime files
 *.log
@@ -32,3 +33,6 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+
+README.HOSTINGER-VPS-NO-DOMAIN.md

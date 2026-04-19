@@ -490,8 +490,6 @@ if (-not $match.Success) {
 $encodedPassword = $match.Groups["pass"].Value
 $postgresPassword = [System.Uri]::UnescapeDataString($encodedPassword)
 
-
-
 Set-Secret -Name "DOCKERHUB_USERNAME" -Value $inputSecrets["DOCKERHUB_USERNAME"]
 Set-Secret -Name "DOCKERHUB_TOKEN" -Value $inputSecrets["DOCKERHUB_TOKEN"]
 Set-Secret -Name "VPS_HOST" -Value $inputSecrets["VPS_HOST"]
@@ -499,9 +497,9 @@ Set-Secret -Name "VPS_USER" -Value $inputSecrets["VPS_USER"]
 Set-Secret -Name "VPS_APP_DIR" -Value $inputSecrets["VPS_APP_DIR"]
 Set-Secret -Name "CLIENT_PUBLIC_API_BASE_URL" -Value $inputSecrets["CLIENT_PUBLIC_API_BASE_URL"]
 if ([string]::IsNullOrWhiteSpace($inputSecrets["ACCESS_TOKEN_SECRET"])) {
-  Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $serverEnv["ACCESS_TOKEN_SECRET"]
+    Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $serverEnv["ACCESS_TOKEN_SECRET"]
 } else {
-  Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $inputSecrets["ACCESS_TOKEN_SECRET"]
+    Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $inputSecrets["ACCESS_TOKEN_SECRET"]
 }
 Set-Secret -Name "POSTGRES_PASSWORD" -Value $postgresPassword
 Set-Secret -Name "SERVER_ENV_PRODUCTION" -Value $serverEnvText
@@ -515,16 +513,14 @@ Do not commit real values.
 Use this local-only template:
 
 ```env
-# Local-only input for scripts/set-github-secrets.ps1
-# Keep this file out of git.
-
-DOCKERHUB_USERNAME=your_dockerhub_username
-DOCKERHUB_TOKEN=your_new_dockerhub_rw_token
-VPS_HOST=your_vps_public_ip
+DOCKERHUB_USERNAME=bayajidph
+DOCKERHUB_TOKEN=YOUR_DOCKERHUB_ACCESS_TOKEN
+VPS_HOST=178.16.138.32
 VPS_USER=root
 VPS_APP_DIR=/opt/apps/docker-nginx-deployment
-CLIENT_PUBLIC_API_BASE_URL=http://your_vps_public_ip/api/v1
-ACCESS_TOKEN_SECRET=your_access_token_secret
+CLIENT_PUBLIC_API_BASE_URL=http://178.16.138.32/api/v1
+ACCESS_TOKEN_SECRET=accesssecret
+JWT_ACCESS_SECRET=accesssecret
 ```
 
 ---
@@ -535,16 +531,18 @@ ACCESS_TOKEN_SECRET=your_access_token_secret
 
 Set these in GitHub repository settings -> Secrets and variables -> Actions:
 
-- DOCKERHUB_USERNAME
-- DOCKERHUB_TOKEN
-- VPS_HOST
-- VPS_USER
-- VPS_SSH_KEY
-- VPS_APP_DIR
-- CLIENT_PUBLIC_API_BASE_URL
-- POSTGRES_PASSWORD
 - ACCESS_TOKEN_SECRET
+- CLIENT_PUBLIC_API_BASE_URL
+- DOCKERHUB_TOKEN
+- DOCKERHUB_USERNAME
+- ENV_FILE
+- JWT_ACCESS_SECRET
+- POSTGRES_PASSWORD
 - SERVER_ENV_PRODUCTION
+- VPS_APP_DIR
+- VPS_HOST
+- VPS_SSH_KEY
+- VPS_USER
 
 ### 3.2 server/.env.production (local file, then uploaded into GitHub secret)
 
