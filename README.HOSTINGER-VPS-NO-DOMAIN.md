@@ -490,6 +490,8 @@ if (-not $match.Success) {
 $encodedPassword = $match.Groups["pass"].Value
 $postgresPassword = [System.Uri]::UnescapeDataString($encodedPassword)
 
+
+
 Set-Secret -Name "DOCKERHUB_USERNAME" -Value $inputSecrets["DOCKERHUB_USERNAME"]
 Set-Secret -Name "DOCKERHUB_TOKEN" -Value $inputSecrets["DOCKERHUB_TOKEN"]
 Set-Secret -Name "VPS_HOST" -Value $inputSecrets["VPS_HOST"]

@@ -11,6 +11,7 @@ export interface PaginationMeta {
     total: number;
     totalPages: number;
 }
+
 export interface ApiErrorResponse {
     success: false;
     message: string;
