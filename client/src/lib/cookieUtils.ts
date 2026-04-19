@@ -2,6 +2,12 @@
 
 import { cookies } from "next/headers";
 
+const shouldUseSecureCookies = () => {
+    // Keep secure cookies for real production traffic, but allow HTTP deployments (no TLS yet).
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_URL || "";
+    return appUrl.startsWith("https://");
+};
+
 export const setCookie = async (
     name : string,
     value : string,
@@ -11,7 +17,7 @@ export const setCookie = async (
 
     cookieStore.set(name, value, {
         httpOnly : true,
-        secure : true,
+        secure : shouldUseSecureCookies(),
         sameSite : "lax",
         path : "/",
         maxAge : maxAgeInSeconds,
