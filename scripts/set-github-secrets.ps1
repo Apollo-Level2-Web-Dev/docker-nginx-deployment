@@ -93,6 +93,11 @@ if ([string]::IsNullOrWhiteSpace($inputSecrets["ACCESS_TOKEN_SECRET"])) {
 } else {
     Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $inputSecrets["ACCESS_TOKEN_SECRET"]
 }
+if ([string]::IsNullOrWhiteSpace($inputSecrets["JWT_ACCESS_SECRET"])) {
+    Set-Secret -Name "JWT_ACCESS_SECRET" -Value $serverEnv["JWT_ACCESS_SECRET"]
+} else {
+    Set-Secret -Name "JWT_ACCESS_SECRET" -Value $inputSecrets["JWT_ACCESS_SECRET"]
+}
 Set-Secret -Name "POSTGRES_PASSWORD" -Value $postgresPassword
 Set-Secret -Name "SERVER_ENV_PRODUCTION" -Value $serverEnvText
 
