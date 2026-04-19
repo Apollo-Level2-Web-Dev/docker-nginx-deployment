@@ -585,22 +585,6 @@ These are written/exported by workflow automatically:
 - server/.env.production written from SERVER_ENV_PRODUCTION secret.
 - Shell exports for deploy: REGISTRY, IMAGE_NAMESPACE, IMAGE_TAG, POSTGRES_PASSWORD, ACCESS_TOKEN_SECRET, JWT_ACCESS_SECRET.
 
----
-
-## 4) GitHub Actions Process Diagrams
-
-### 4.1 Custom CI/CD Execution Flow
-
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/3d4daae7-e0ae-462f-b45d-dd8ac87cfaaa" />
-
-
-### 4.2 Deployment Sequence (What Happens on VPS)
-
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/ebfe2867-c49b-43aa-b4c1-770b462923ea" />
-
-
----
-
 ## 5) One-Time VPS Setup
 
 SSH into VPS and run:
