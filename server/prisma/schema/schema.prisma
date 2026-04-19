@@ -12,17 +12,3 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
-#include "auth.prisma"
-#include "patient.prisma"
-#include "doctor.prisma"
-#include "schedule.prisma"
-#include "appointment.prisma"
-#include "specialty.prisma"
-#include "payment.prisma"
-#include "prescription.prisma"
-#include "medicalReport.prisma"
-#include "review.prisma"
-#include "patientHealthData.prisma"
-#include "admin.prisma"
-#include "enums.prisma"
