@@ -1,5 +1,5 @@
 import { Server } from "http";
-import app from "./app";
+import app from "./createApp";
 import { envVars } from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seed";
 
