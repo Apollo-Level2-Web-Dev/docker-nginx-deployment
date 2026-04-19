@@ -762,3 +762,4 @@ ufw status
 - Rotate any token immediately if exposed.
 - Keep VPS_SSH_KEY only in GitHub secrets.
 - Prefer Docker Hub access tokens over account password.
+- Prefer Docker Hub access tokens over account password.
