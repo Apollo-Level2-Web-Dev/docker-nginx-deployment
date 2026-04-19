@@ -199,7 +199,7 @@ jobs:
 
             docker compose -f docker-compose.prod.yaml pull
             docker compose -f docker-compose.prod.yaml up -d
-            docker compose -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm prisma migrate deploy --schema=prisma/schema"
+            docker compose -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm dlx prisma@7.3.0 migrate deploy --schema=prisma/schema"
             docker image prune -f
 ```
 
@@ -737,7 +737,7 @@ docker compose -f docker-compose.prod.yaml restart
 Run migration manually:
 
 ```bash
-docker compose -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm prisma migrate deploy --schema=prisma/schema"
+docker compose -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm dlx prisma@7.3.0 migrate deploy --schema=prisma/schema"
 ```
 
 Nginx checks:
