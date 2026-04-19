@@ -1,5 +1,11 @@
 # PH Healthcare - Dockerization Series (Local Dev)
 
+## Production Deployment Runbook
+
+For repeatable VPS deployment and CI/CD setup, use:
+
+- [README.HOSTINGER-VPS-NO-DOMAIN.md](README.HOSTINGER-VPS-NO-DOMAIN.md)
+
 
 ## 5-2 -> Steps to Build a Multi-Container Application
 
