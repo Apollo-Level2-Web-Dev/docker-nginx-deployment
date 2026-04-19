@@ -58,8 +58,8 @@ Add these in GitHub repository secrets:
 - `POSTGRES_PASSWORD` = DB password
 - `CLIENT_PUBLIC_API_BASE_URL` = `http://YOUR_VPS_IP/api/v1`
 - `SERVER_ENV_PRODUCTION` = full content of `server/.env.production`
-- `GHCR_USERNAME` = GitHub username (required if GHCR packages are private)
-- `GHCR_TOKEN` = GitHub PAT with `read:packages` (required if GHCR packages are private)
+- `DOCKERHUB_USERNAME` = Docker Hub username or org name
+- `DOCKERHUB_TOKEN` = Docker Hub access token or password
 
 Example `SERVER_ENV_PRODUCTION` value:
 
@@ -99,7 +99,7 @@ Push to `main`.
 
 Pipeline in [.github/workflows/cicd.yml](.github/workflows/cicd.yml):
 1. Lint and build server/client
-2. Build and push Docker images to GHCR
+2. Build and push Docker images to Docker Hub
 3. SSH to VPS and deploy with [docker-compose.prod.yaml](docker-compose.prod.yaml)
 4. Run Prisma migrate deploy
 
