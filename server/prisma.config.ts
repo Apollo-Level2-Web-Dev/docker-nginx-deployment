@@ -8,7 +8,7 @@ const databaseUrl =
   "postgresql://postgres:postgres@localhost:5432/postgres?schema=public";
 
 export default defineConfig({
-  schema: "prisma/schema/schema.prisma",
+  schema: "prisma/schema",
   migrations: {
     path: "prisma/migrations",
   },
