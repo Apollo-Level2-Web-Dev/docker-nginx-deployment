@@ -8,10 +8,9 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: docker.io
 
 concurrency:
   group: deploy-main
@@ -80,17 +79,16 @@ jobs:
         id: vars
         shell: bash
         run: |
-          echo "owner_lower=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "namespace=${{ secrets.DOCKERHUB_USERNAME }}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to GHCR
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push server image
         uses: docker/build-push-action@v6
@@ -99,8 +97,8 @@ jobs:
           file: ./server/Dockerfile.prod
           push: true
           tags: |
-            ghcr.io/${{ steps.vars.outputs.owner_lower }}/ph-healthcare-server:latest
-            ghcr.io/${{ steps.vars.outputs.owner_lower }}/ph-healthcare-server:${{ github.sha }}
+            docker.io/${{ steps.vars.outputs.namespace }}/ph-healthcare-server:latest
+            docker.io/${{ steps.vars.outputs.namespace }}/ph-healthcare-server:${{ github.sha }}
 
       - name: Build and push client image
         uses: docker/build-push-action@v6
@@ -111,8 +109,8 @@ jobs:
             NEXT_PUBLIC_API_BASE_URL=${{ secrets.CLIENT_PUBLIC_API_BASE_URL }}
           push: true
           tags: |
-            ghcr.io/${{ steps.vars.outputs.owner_lower }}/ph-healthcare-client:latest
-            ghcr.io/${{ steps.vars.outputs.owner_lower }}/ph-healthcare-client:${{ github.sha }}
+            docker.io/${{ steps.vars.outputs.namespace }}/ph-healthcare-client:latest
+            docker.io/${{ steps.vars.outputs.namespace }}/ph-healthcare-client:${{ github.sha }}
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -125,7 +123,7 @@ jobs:
         id: vars
         shell: bash
         run: |
-          echo "owner_lower=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "namespace=${{ secrets.DOCKERHUB_USERNAME }}" >> "$GITHUB_OUTPUT"
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.2.0
@@ -135,20 +133,32 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
-            cd ${{ secrets.VPS_APP_DIR }}
+            APP_DIR="${{ secrets.VPS_APP_DIR }}"
+
+            if [ -z "$APP_DIR" ]; then
+              echo "VPS_APP_DIR secret is empty. Set it to the repo path on the VPS, for example /opt/apps/ph-healthcare."
+              exit 1
+            fi
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "VPS_APP_DIR does not exist on the VPS: $APP_DIR"
+              echo "Create it and clone the repo there, for example:"
+              echo "  mkdir -p /opt/apps && cd /opt/apps && git clone <repo-url> ph-healthcare"
+              exit 1
+            fi
+
+            cd "$APP_DIR"
 
             printf '%s' "${{ secrets.SERVER_ENV_PRODUCTION }}" > server/.env.production
 
             cat > .env.stack <<EOF
-            REGISTRY=ghcr.io
-            IMAGE_NAMESPACE=${{ steps.vars.outputs.owner_lower }}
+            REGISTRY=docker.io
+            IMAGE_NAMESPACE=${{ steps.vars.outputs.namespace }}
             IMAGE_TAG=${{ github.sha }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             EOF
 
-            if [ -n "${{ secrets.GHCR_USERNAME }}" ] && [ -n "${{ secrets.GHCR_TOKEN }}" ]; then
-              echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
-            fi
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login docker.io -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
             docker compose --env-file .env.stack -f docker-compose.prod.yaml pull
             docker compose --env-file .env.stack -f docker-compose.prod.yaml up -d

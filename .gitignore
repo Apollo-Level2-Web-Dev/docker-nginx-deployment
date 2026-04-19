@@ -18,6 +18,9 @@ coverage/
 .env.*
 !.env.example
 
+# Secrets and sensitive input files
+ci/github-secrets.input.env
+
 # Logs and runtime files
 *.log
 npm-debug.log*
