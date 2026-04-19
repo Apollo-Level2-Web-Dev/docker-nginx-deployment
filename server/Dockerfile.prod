@@ -13,18 +13,20 @@ FROM deps AS builder
 
 COPY . .
 RUN pnpm generate && pnpm build
+RUN pnpm prune --prod
 
 FROM base AS runner
 
 ENV NODE_ENV=production
 
+RUN npm install -g tsx@4.21.0
+
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src ./src
 COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 5000
 
-CMD ["pnpm", "start"]
+CMD ["tsx", "dist/src/server.js"]
