@@ -85,7 +85,7 @@ export interface IDoctorUserDetails {
     email?: string;
     name?: string;
     role?: string;
-    status?: string;
+    status: UserStatus;
     emailVerified?: boolean;
     image?: string;
     isDeleted?: boolean;

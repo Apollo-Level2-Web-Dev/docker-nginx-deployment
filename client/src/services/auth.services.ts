@@ -3,16 +3,15 @@
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { cookies } from "next/headers";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const getBaseApiUrl = () => {
+    return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v1";
+}
 
 export async function getNewTokensWithRefreshToken(refreshToken  : string) : Promise<boolean> {
     try {
-        if(!BASE_API_URL){
-            console.error("NEXT_PUBLIC_API_BASE_URL is not defined");
-            return false;
-        }
+        const baseApiUrl = getBaseApiUrl();
 
-        const res = await fetch(`${BASE_API_URL}/auth/refresh-token`, {
+        const res = await fetch(`${baseApiUrl}/auth/refresh-token`, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json",
@@ -49,10 +48,7 @@ export async function getNewTokensWithRefreshToken(refreshToken  : string) : Pro
 
 export async function getUserInfo() {
     try {
-        if(!BASE_API_URL){
-            console.error("NEXT_PUBLIC_API_BASE_URL is not defined");
-            return null;
-        }
+        const baseApiUrl = getBaseApiUrl();
 
         const cookieStore = await cookies();
         const accessToken = cookieStore.get("accessToken")?.value;
@@ -62,7 +58,7 @@ export async function getUserInfo() {
             return null;
         }
 
-        const res = await fetch(`${BASE_API_URL}/auth/me`, {
+        const res = await fetch(`${baseApiUrl}/auth/me`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
