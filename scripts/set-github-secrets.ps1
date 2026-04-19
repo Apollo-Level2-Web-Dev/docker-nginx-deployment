@@ -88,6 +88,11 @@ Set-Secret -Name "VPS_HOST" -Value $inputSecrets["VPS_HOST"]
 Set-Secret -Name "VPS_USER" -Value $inputSecrets["VPS_USER"]
 Set-Secret -Name "VPS_APP_DIR" -Value $inputSecrets["VPS_APP_DIR"]
 Set-Secret -Name "CLIENT_PUBLIC_API_BASE_URL" -Value $inputSecrets["CLIENT_PUBLIC_API_BASE_URL"]
+if ([string]::IsNullOrWhiteSpace($inputSecrets["ACCESS_TOKEN_SECRET"])) {
+    Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $serverEnv["ACCESS_TOKEN_SECRET"]
+} else {
+    Set-Secret -Name "ACCESS_TOKEN_SECRET" -Value $inputSecrets["ACCESS_TOKEN_SECRET"]
+}
 Set-Secret -Name "POSTGRES_PASSWORD" -Value $postgresPassword
 Set-Secret -Name "SERVER_ENV_PRODUCTION" -Value $serverEnvText
 
