@@ -1,7 +1,7 @@
 import { Server } from "http";
-import app from "./createApp";
-import { envVars } from "./app/config/env";
-import { seedSuperAdmin } from "./app/utils/seed";
+import app from "./createApp.js";
+import { envVars } from "./app/config/env.js";
+import { seedSuperAdmin } from "./app/utils/seed.js";
 
 let server : Server;
 const bootstrap = async() => {
