@@ -37,6 +37,7 @@ services:
     restart: unless-stopped
     environment:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      ACCESS_TOKEN_SECRET: ${JWT_ACCESS_SECRET}
     depends_on:
       - ph-server
     networks:

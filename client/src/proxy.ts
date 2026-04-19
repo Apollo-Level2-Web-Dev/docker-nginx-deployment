@@ -20,15 +20,20 @@ async function refreshTokenMiddleware (refreshToken : string) : Promise<boolean>
 
 export async function proxy (request : NextRequest) {
    try {
+         const accessTokenSecret = process.env.JWT_ACCESS_SECRET || process.env.ACCESS_TOKEN_SECRET;
+
+         if(!accessTokenSecret){
+                console.error("Missing JWT_ACCESS_SECRET/ACCESS_TOKEN_SECRET in ph-client runtime environment");
+         }
+
        const { pathname } = request.nextUrl; // eg /dashboard, /admin/dashboard, /doctor/dashboard
     const pathWithQuery = `${pathname}${request.nextUrl.search}`;
        const accessToken = request.cookies.get("accessToken")?.value;
        const refreshToken = request.cookies.get("refreshToken")?.value;
 
-         const decodedAccessToken =  accessToken ? jwtUtils.decodedToken(accessToken) : null;
+         const decodedAccessToken =  accessToken && accessTokenSecret && jwtUtils.verifyToken(accessToken, accessTokenSecret).data;
 
-         // Do not hard-fail on client-side secret mismatch; backend endpoints enforce real auth.
-         const isValidAccessToken = Boolean(accessToken);
+         const isValidAccessToken = Boolean(accessToken && accessTokenSecret && jwtUtils.verifyToken(accessToken, accessTokenSecret).success);
 
        let userRole: UserRole | null = null;
 
@@ -46,7 +51,7 @@ export async function proxy (request : NextRequest) {
 
 
        //proactively refresh token if refresh token exists and access token is expired or about to expire
-       if (isValidAccessToken && refreshToken && (await isTokenExpiringSoon(accessToken))){
+    if (isValidAccessToken && accessToken && refreshToken && (await isTokenExpiringSoon(accessToken))){
             const requestHeaders = new Headers(request.headers);
 
             const response = NextResponse.next({
