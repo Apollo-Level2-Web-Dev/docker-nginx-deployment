@@ -43,6 +43,12 @@ jobs:
         working-directory: ./server
         run: pnpm lint
 
+      - name: Generate Prisma client
+        working-directory: ./server
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
+        run: pnpm generate
+
       - name: Build server
         working-directory: ./server
         run: pnpm build
