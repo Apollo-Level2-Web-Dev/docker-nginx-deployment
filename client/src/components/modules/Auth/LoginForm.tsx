@@ -11,6 +11,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface LoginFormProps {
@@ -19,6 +20,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ redirectPath }: LoginFormProps) => {
     // const queryClient = useQueryClient();
+  const router = useRouter();
 
     const [serverError, setServerError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +44,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     setServerError(result.message || "Login failed");
                     return ;
                 }
+
+              if(result.redirectTo){
+                router.push(result.redirectTo);
+              }
             } catch (error : any) {
                 console.log(`Login failed: ${error.message}`);
                 setServerError(`Login failed: ${error.message}`);
