@@ -17,12 +17,6 @@ This guide includes:
 
 ---
 
-## 1) Architecture Overview
-
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/267a1067-9a0f-4d9b-ba32-c2e49aea19d5" />
-
-
----
 
 ## 2) Deployment Files (Exact Code)
 
@@ -349,6 +343,10 @@ CMD ["tsx", "dist/src/server.js"]
 
 ### 2.5 client/Dockerfile.prod
 
+docker build -f client/Dockerfile -t ph-client:single-stage client
+
+docker build -f client/Dockerfile.prod -t ph-client:multi-stage --build-arg NEXT_PUBLIC_API_BASE_URL=http://example.com/api/v1 client
+
 ```dockerfile
 FROM node:22-alpine AS deps
 
@@ -535,7 +533,6 @@ Set these in GitHub repository settings -> Secrets and variables -> Actions:
 - CLIENT_PUBLIC_API_BASE_URL
 - DOCKERHUB_TOKEN
 - DOCKERHUB_USERNAME
-- ENV_FILE
 - JWT_ACCESS_SECRET
 - POSTGRES_PASSWORD
 - SERVER_ENV_PRODUCTION
