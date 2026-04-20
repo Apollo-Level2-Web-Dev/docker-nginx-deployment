@@ -388,6 +388,7 @@ Use this local-only template:
 
 Set these in GitHub repository settings -> Secrets and variables -> Actions:
 
+- ACCESS_TOKEN_SECRET
 - POSTGRES_PASSWORD
 - SERVER_ENV_PRODUCTION
 - VPS_SSH_KEY
@@ -434,6 +435,12 @@ SUPER_ADMIN_EMAIL=...
 SUPER_ADMIN_PASSWORD=...
 ```
 
+### 3.3 Runtime env files on VPS
+
+These are written/exported by workflow automatically:
+
+- server/.env.production written from SERVER_ENV_PRODUCTION secret.
+- Shell exports for deploy: REGISTRY, IMAGE_NAMESPACE, IMAGE_TAG, POSTGRES_PASSWORD, ACCESS_TOKEN_SECRET, JWT_ACCESS_SECRET.
 
 ## 5) One-Time VPS Setup
 
@@ -456,7 +463,7 @@ Clone project:
 ```bash
 mkdir -p /opt/apps
 cd /opt/apps
-git clone https://github.com/Apollo-Level2-Web-Dev/docker-nginx-deployment.git ph-healthcare
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git ph-healthcare
 cd ph-healthcare
 ```
 
@@ -472,7 +479,27 @@ systemctl reload nginx
 
 ---
 
-### Manual upload in GitHub UI
+## 6) Upload GitHub Secrets (Recommended via Script)
+
+### Option A: Automatic upload using scripts/set-github-secrets.ps1
+
+On your local machine:
+
+1) Prepare server/.env.production with real values.
+2) Prepare ci/github-secrets.input.env with values.
+3) Authenticate GitHub CLI:
+
+```powershell
+gh auth login
+```
+
+4) Upload all required secrets:
+
+```powershell
+./scripts/set-github-secrets.ps1 -Repo "YOUR_ORG_OR_USER/YOUR_REPO"
+```
+
+### Option B: Manual upload in GitHub UI
 
 Set every secret listed in section 3.1 manually.
 
