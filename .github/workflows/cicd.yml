@@ -162,7 +162,7 @@ jobs:
             export IMAGE_TAG=${{ github.sha }}
             export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             export ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
-            export JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}
+            export JWT_ACCESS_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
 
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login docker.io -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
@@ -170,4 +170,3 @@ jobs:
             docker compose -f docker-compose.prod.yaml up -d
             docker compose -f docker-compose.prod.yaml run --rm ph-server sh -lc "pnpm dlx prisma@7.3.0 migrate deploy --schema=prisma/schema"
             docker image prune -f
-       
